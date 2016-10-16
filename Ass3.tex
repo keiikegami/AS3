@@ -55,20 +55,74 @@ Assignment 3}
 		\end{align*}
 		\lstinputlisting[caption=1-c]{1-c.py}
 		Trace plot. $\sigma^2$ and $\theta_1$.
-		
+		\par
 		\includegraphics[width = 9cm]{1-c-sigma.png}
 		\includegraphics[width = 9cm]{1-c-theta.png}
 		
 	
 \section{}
 	\subsection{}
+		\begin{align*}
+		p({bf y} | \sigma^2) &= \idotsint \Pi_{i = 1}^{n} \left(\Pi_{j=1}^{J} \frac{1}{\sqrt{2\pi}} \exp\left( -\frac{(y_{ij} - \theta_i)^2}{2}\right) \right)\frac{1}{\sqrt{2\pi}\sigma} \exp\left( -\frac{\theta_i^2}{2\sigma^2}\right)\mathrm{d}\theta_1 \dots \mathrm{d}\theta_n \\
+		&= \idotsint \Pi_{i = 1}^{n} \exp\left( -\frac{\sum_{j=1}^{J} y_{ij}^2}{2} + \frac{\sigma^2 (\sum_{j=1}^{J} y_{ij})^2}{2(\sigma^2 + 1)} \right) \frac{1}{\sqrt{2\pi}^J} \frac{1}{\sqrt{J\sigma^2 + 1}} \\ &\frac{\sqrt{J\sigma^2 + 1}}{\sqrt{2\pi}\sigma} \exp\left(-\frac{J\sigma^2 + 1}{2\sigma^2} \left( \theta_i - \frac{\sigma^2}{J\sigma^2 + 1} \sum_{j=1}^{J} y_{ij} \right)^2\right)\mathrm{d}\theta_1 \dots \mathrm{d}\theta_n \\
+		&= \Pi_{i=1}^{n} \frac{1}{\sqrt{2\pi}^J} \frac{1}{\sqrt{J\sigma^2 + 1}} \exp\left( -\frac{\sum_{j=1}^{J} y_{ij}^2}{2} + \frac{\sigma^2 (\sum_{j=1}^{J} y_{ij})^2}{2(\sigma^2 + 1)} \right)\\
+		&= \frac{1}{\sqrt{2\pi}^{nJ}} \frac{1}{\sqrt{J\sigma^2 + 1}^{n}} \exp\left( -\frac{\sum_{i=1}^{n} \sum_{j=1}^{J} y_{ij}^2}{2} + \frac{\sigma^2 \sum_{i=1}^{n} \left( \sum_{j=1}^{J} y_{ij}\right)^2}{2(J\sigma^2+ 1)}\right)\\
+		\end{align*}
 	\subsection{}
 	\subsection{}
+	By problem 2-a, we can derive the below posterior distribution.
+		\begin{align*}
+		p(\sigma^2 | {\bf y}) &\propto \frac{1}{\sigma^2} \frac{1}{\sqrt{J\sigma^2 + 1}^n} \exp \left( \frac{\sigma^2 \sum_{i=1}^{n} \left( \sum_{j=1}^{J} y_{ij}\right)^2}{2(J\sigma^2+ 1)}\right)
+		\end{align*}
+		\lstinputlisting[caption=2-c]{2-c.py}
+		\begin{center}
+		\includegraphics[width = 12cm]{2-c.png}
+		\end{center}		
 	\subsection{}
+	Use the previous notations. And by the same way we get the below posterior distributions.
+		\begin{align*}
+			p(\sigma^2 | \Theta, {\bf y}) &\propto \frac{1}{\sigma^2 \sqrt{2\pi\sigma^2}^n} \exp \left( -\frac{\sum_{i=1}^{n} \theta_{i}^{2}}{2\sigma^2}\right)\\
+			p(\theta_i | \Theta_{-i}, {\bf y}, \sigma^2) &\propto N\left( \frac{\sigma^2 \sum_{j=1}^{J} y_{ij}}{1 + J\sigma^2}, \frac{\sigma^2}{1 + J\sigma^2}\right) \forall i \in \left\{ 1,2,3, \dots, n \right\} \\
+		\end{align*}
+		\lstinputlisting[caption=2-d]{2-d.py}
+		\par
+		Trace plot. $\sigma^2$ and $\theta_1$.
+		\par
+		\includegraphics[width = 9cm]{2-d-sigma.png}
+		\includegraphics[width = 9cm]{2-d-theta.png}
 
 \section{}
 	\subsection{}
+	Let $\hat{\beta} = ({\bf X}^T{\bf X})^{-1}{\bf X}^T{\bf y}$ and $\hat{\epsilon} = {\bf y}-\hat{{\bf y}}$.
+		\begin{align*}
+		p(\beta, \sigma^2 | {\bf X}, {\bf y}) &\propto \frac{1}{\sigma^2} p({\bf y} | {\bf X}, \beta, \sigma^2) \\
+		&\propto (\sigma^2)^{-(\frac{n}{2} +1)} \exp\left( \frac{1}{2\sigma^2} ({\bf y} - {\bf X}\beta)^T ({\bf y} - {\bf X}\beta)\right)\\
+		&= (\sigma^2)^{-(\frac{n}{2} +1)} \exp\left( \frac{1}{2\sigma^2} (\hat{\epsilon}^T\hat{\epsilon} + (\beta - \hat{\beta})^T ({\bf X}^T{\bf X})(\beta - \hat{\beta}) )\right)\\
+		\end{align*}
 	\subsection{}
+	Let $\theta = \frac{2}{\hat{\epsilon}^T\hat{\epsilon} + (\beta - \hat{\beta})^T ({\bf X}^T{\bf X})(\beta - \hat{\beta}) )}$
+		\begin{align*}
+		p(\beta | {\bf X}, {\bf y}) &= \int \left( \frac{1}{\sigma^2}\right)^{\frac{n}{2} + 1} \exp \left( \frac{1}{\sigma^2 \theta}\right) \mathrm{d} \sigma^2
+		= \int |\sigma^{-4}| \left(\frac{1}{\sigma^2} \right)^{\frac{n}{2} + 1} \exp \left( \frac{1}{\sigma^2 \theta}\right) \mathrm{d} \sigma^{-2}\\
+		&= \int \left(\frac{1}{\sigma^2} \right)^{\frac{n}{2} -1} \exp \left( \frac{1}{\sigma^2 \theta}\right) \mathrm{d} \sigma^{-2}
+		= \Gamma \left(\frac{n}{2} \right) \theta^{\frac{n}{2}} \int \frac{1}{\Gamma(\frac{n}{2})} \left(\frac{1}{\theta}\right)^{\frac{n}{2}} \left( \frac{1}{\sigma^2}\right)^{\frac{n}{2} -1} \exp \left( \frac{1}{\sigma^2 \theta}\right) \mathrm{d} \sigma^{-2}\\
+		&= \Gamma \left(\frac{n}{2} \right) \left(\frac{1}{\theta} \right)^{-\frac{n}{2}}
+		\propto \left(\frac{1}{\theta} \right)^{-\frac{n}{2}}\\
+		&= \left( \frac{\hat{\epsilon}^T\hat{\epsilon}}{2} \frac{\hat{\epsilon}^T\hat{\epsilon} + (\beta - \hat{\beta})^T ({\bf X}^T{\bf X})(\beta - \hat{\beta}))}{\hat{\epsilon}^T\hat{\epsilon}}\right)^{-\frac{n}{2}}
+		\propto \left( 1 + \frac{(\beta - \hat{\beta})^T ({\bf X}^T{\bf X})(\beta - \hat{\beta}))}{\hat{\epsilon}^T\hat{\epsilon}}\right)^{-\frac{n}{2}}\\
+		\end{align*}
+		\par 
+		This means the posterior distribution of $\beta$ is $t_{n-k} (\hat{\beta} , S_{\epsilon}^2({\bf X}^T{\bf X})^{-1})$, where $S_{\epsilon}^2 = \frac{\hat{\epsilon}^T\hat{\epsilon}}{n-k}$.
+		\par
+		Next we calculate the posterior distribution of $\sigma^2$.
+		\begin{align*}
+			p(\sigma^2 | {\bf X}, {\bf y}) &= \int (\sigma^2)^{-(\frac{n}{2} + 1)} \exp\left( -\frac{\hat{\epsilon}^T\hat{\epsilon} + (\beta - \hat{\beta})^T ({\bf X}^T{\bf X})(\beta - \hat{\beta})}{2\sigma^2}\right) \mathrm{d} \beta\\
+			&= (2\pi)^{\frac{n}{2}} |\left(\frac{{\bf X}^T{\bf X}}{\sigma^2}\right)^{-1}| (\sigma^2)^{-(\frac{n}{2} + 1)} \exp\left( -\frac{\hat{\epsilon}^T\hat{\epsilon}}{2\sigma^2}\right) \\ &\int \frac{1}{(2\pi)^{\frac{n}{2}} |\left(\frac{{\bf X}^T{\bf X}}{\sigma^2}\right)^{-1}|} \exp\left( -\frac{1}{2} \left( (\beta - \hat{\beta})^T ((\frac{{\bf X}^T {\bf X}}{\sigma^2})^{-1})^{-1} (\beta - \hat{\beta})\right)\right) \mathrm{d} \beta \\
+			&= \frac{(2\pi)^{\frac{n}{2}}}{|{\bf X}^T{\bf X}|}(\sigma^2)^{-\frac{n}{2}} \exp\left( -\frac{\hat{\epsilon}^T\hat{\epsilon}}{2\sigma^2}\right)\\
+			&\propto (\sigma^2)^{-\frac{n}{2}} \exp\left( -\frac{\hat{\epsilon}^T\hat{\epsilon}}{2\sigma^2}\right)\\
+		\end{align*}
+		The last term tells us that the posterior distribution of $\sigma^2$ is inverse gamma distribution whose parameters are $(\frac{n}{2}, \frac{\hat{\epsilon}^T\hat{\epsilon}}{2})$.
+		Thus, the posterior mean of $\beta$ is $\hat{\beta}$ and one of $\sigma^2$ is $\frac{\frac{\hat{\epsilon}^T\hat{\epsilon}}{2}}{\frac{n}{2} -1} = \frac{\hat{\epsilon}^T\hat{\epsilon}}{n-2}$.
 	
 	
 	
@@ -76,3 +130,19 @@ Assignment 3}
 	
 	
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
